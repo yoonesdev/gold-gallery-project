@@ -27,7 +27,7 @@ function MobileMenu({ isOpen, user, logout, onClose }) {
         <div className="mt-2 flex flex-col gap-3">
           {user ? (
             <>
-              <span className="font-medium text-pink-600">👤 {user.name}</span>
+              <Link className="font-medium text-pink-600" to="/account">👤 {user.name}</Link>
 
               <button
                 onClick={() => {

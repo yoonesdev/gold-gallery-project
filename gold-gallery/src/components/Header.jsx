@@ -63,7 +63,7 @@ function Header() {
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                <span className="text-pink-600">👤 {user.name}</span>
+                <Link className="text-pink-600" to="/account">👤 {user.name}</Link>
 
                 <button onClick={logout} className="text-red-500">
                   خروج

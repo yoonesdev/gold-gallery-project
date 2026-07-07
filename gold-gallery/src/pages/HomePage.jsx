@@ -52,7 +52,7 @@ function HomePage() {
     <div dir="rtl" className="min-h-screen bg-gray-100 font-sans">
       <main className="mx-auto max-w-[1126px] px-4 py-6">
         <HomeSection
-          title="تازه‌ها"
+          title="تازه‌ها ✨"
           products={latestProducts}
           carouselRef={latestRef}
           scrollCarousel={scrollCarousel}

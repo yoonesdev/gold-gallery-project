@@ -3,6 +3,8 @@ import { useDebounce } from "../hooks/useDebounce";
 import { Link } from "react-router-dom";
 import { searchProducts } from "../services/ProductService";
 
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 function SearchBar() {
   const [query, setQuery] = useState("");
   const debouncedQuery = useDebounce(query);
@@ -14,7 +16,7 @@ function SearchBar() {
   const highlightText = (text, keyword) => {
     if (!keyword) return text;
 
-    const parts = text.split(new RegExp(`(${keyword})`, "gi"));
+    const parts = text.split(new RegExp(`(${escapeRegExp(keyword)})`, "gi"));
 
     return parts.map((part, index) =>
       part.toLowerCase() === keyword.toLowerCase() ? (
@@ -30,7 +32,8 @@ function SearchBar() {
   return (
     <div className="relative w-full">
       <input
-        type="text"
+        type="search"
+        aria-label="جستجو در محصولات"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="جستجو در طلا و جواهر..."
@@ -47,7 +50,7 @@ function SearchBar() {
               className="block border-b px-4 py-2 hover:bg-gray-100"
               onClick={() => setQuery("")}
             >
-              {highlightText(item.title, query)}
+              {highlightText(item.title, debouncedQuery)}
             </Link>
           ))}
         </div>

@@ -1,26 +1,18 @@
-export function createOrder(cart, user) {
-  const order = {
+export function createOrder(cart) {
+  return {
     id: Date.now(),
-    user: user || null,
-    items: cart,
-    total: cart.reduce(
+    items: cart.map((item) => ({
+      id: item.id,
+      title: item.title,
+      price: item.price,
+      quantity: item.quantity,
+      image: item.image,
+    })),
+    totalPrice: cart.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0,
     ),
-    createdAt: new Date().toISOString(),
+    date: new Date().toLocaleDateString("fa-IR"),
     status: "pending",
   };
-
-  const oldOrders =
-    JSON.parse(localStorage.getItem("orders")) || [];
-
-  const updatedOrders = [order, ...oldOrders];
-
-  localStorage.setItem("orders", JSON.stringify(updatedOrders));
-
-  return order;
-}
-
-export function getOrders() {
-  return JSON.parse(localStorage.getItem("orders")) || [];
 }

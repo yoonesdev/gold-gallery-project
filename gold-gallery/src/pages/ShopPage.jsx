@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
-import { useState } from "react";
 import { getProductsBySeller } from "../services/ProductService";
 import { getSellerById } from "../services/SellerService";
 import FilterBar from "../components/FilterBar";
@@ -25,7 +24,6 @@ function ShopPage() {
     return getSellerById(sellerId);
   }, [sellerId]);
 
-  // question: Is sellerProducts a varaible with a value in it? or a function? why it is written like this? but why Isn't written like : function sellerProducts () {}
   const sellerProducts = useMemo(() => {
     let products = getProductsBySeller(sellerId);
 
@@ -37,13 +35,11 @@ function ShopPage() {
     // SORT
     switch (sort) {
       case "price-low":
-        // question: when we write products = [...products] we mutate the original array anyway, so why do we need to create a new array?
         products = [...products].sort((a, b) => a.price - b.price);
         break;
 
       case "price-high":
         products = [...products].sort((a, b) => b.price - a.price);
-        // Is break equal to return? I mean if a return was right down here and "sort" was "price-high", that return (or break) get us out of function(sellerProducts)? what about the rest of code?
         break;
 
       case "popular":
@@ -117,8 +113,10 @@ function ShopPage() {
 
       <div className="mb-6 flex flex-wrap gap-2">
         <button
-          onClick={() => setCategory(cat.value)}
-          className={`rounded px-3 py-1 border`}
+          onClick={() => setCategory("")}
+          className={`rounded border px-3 py-1 ${
+            category === "" ? "bg-pink-500 text-white" : ""
+          }`}
         >
           همه
         </button>

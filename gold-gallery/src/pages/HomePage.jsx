@@ -1,5 +1,5 @@
 import { useRef, useMemo, useContext } from "react";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../context/contexts";
 import { getProducts } from "../services/ProductService";
 import HomeSection from "../components/HomeSection";
 
@@ -40,10 +40,10 @@ function HomePage() {
   const scrollCarousel = (ref, direction) => {
     if (!ref.current) return;
 
-    const scrollAmount = 276;
+    const SCROLL_AMOUNT = 276;
 
     ref.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
+      left: direction === "left" ? -SCROLL_AMOUNT : SCROLL_AMOUNT,
       behavior: "smooth",
     });
   };

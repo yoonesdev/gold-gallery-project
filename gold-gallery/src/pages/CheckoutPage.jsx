@@ -1,9 +1,9 @@
 import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
-import { OrderContext } from "../context/OrderContext";
+import { CartContext, OrderContext } from "../context/contexts";
 import { useNavigate } from "react-router-dom";
 import PageContainer from "../components/layout/PageContainer";
 import SectionTitle from "../components/ui/SectionTitle";
+import { createOrder } from "../services/OrderService";
 
 function CheckoutPage() {
   const { cart, clearCart } = useContext(CartContext);
@@ -33,19 +33,7 @@ function CheckoutPage() {
       return;
     }
 
-    const order = {
-      id: Date.now(),
-      items: cart.map((item) => ({
-        id: item.id,
-        title: item.title,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image,
-      })),
-      totalPrice,
-      date: new Date().toLocaleDateString("fa-IR"),
-      status: "pending",
-    };
+    const order = createOrder(cart);
 
     addOrder(order);
 

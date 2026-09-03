@@ -1,6 +1,5 @@
 import { useContext, useMemo, useState } from "react";
-import { CartContext } from "../context/CartContext";
-import { AuthContext } from "../context/AuthContext";
+import { CartContext, AuthContext } from "../context/contexts";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import categories from "../constants/categories";
@@ -21,8 +20,11 @@ function Header() {
         {/* Logo */}
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="text-2xl md:hidden"
+            aria-label={isMenuOpen ? "بستن منو" : "باز کردن منو"}
+            aria-expanded={isMenuOpen}
           >
             ☰
           </button>
@@ -33,7 +35,7 @@ function Header() {
         </div>
 
         {cartMessage && (
-          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 z-[9999] bg-green-500 text-white px-4 py-2 rounded-lg shadow transition-all animate-pulse">
+          <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 z-[9999] rounded-lg bg-green-500 px-4 py-2 text-white shadow animate-pulse">
             {cartMessage}
           </div>
         )}
@@ -52,20 +54,24 @@ function Header() {
         </nav>
 
         {/* Search Bar */}
-        <div className="hidden flex-1 px-6 md:block">
+        <div className="hidden md:flex flex-1 px-6">
           <SearchBar />
         </div>
 
         {/* Actions */}
         <div className="flex items-center gap-4 text-sm font-bold text-gray-700">
-          <Link to="/cart">🛒 سبد خرید ({totalItems})</Link>
+          <Link to="/cart" className="whitespace-nowrap">
+            🛒 سبد خرید ({totalItems})
+          </Link>
 
           <div className="hidden md:flex items-center gap-4">
             {user ? (
               <>
-                <Link className="text-pink-600" to="/account">👤 {user.name}</Link>
+                <Link className="text-pink-600" to="/account">
+                  👤 {user.name}
+                </Link>
 
-                <button onClick={logout} className="text-red-500">
+                <button type="button" onClick={logout} className="text-red-500">
                   خروج
                 </button>
               </>
@@ -78,7 +84,7 @@ function Header() {
           </div>
         </div>
       </div>
-      
+
       <div className="px-4 pb-4 md:hidden">
         <SearchBar />
       </div>

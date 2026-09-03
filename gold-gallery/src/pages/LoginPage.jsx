@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/contexts";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function LoginPage() {
@@ -7,7 +7,6 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location);
   const from = location.state?.from || "/";
 
   const [email, setEmail] = useState("");

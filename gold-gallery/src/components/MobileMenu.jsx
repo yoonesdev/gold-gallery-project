@@ -27,9 +27,16 @@ function MobileMenu({ isOpen, user, logout, onClose }) {
         <div className="mt-2 flex flex-col gap-3">
           {user ? (
             <>
-              <Link className="font-medium text-pink-600" to="/account">👤 {user.name}</Link>
+              <Link
+                className="font-medium text-pink-600"
+                to="/account"
+                onClick={onClose}
+              >
+                👤 {user.name}
+              </Link>
 
               <button
+                type="button"
                 onClick={() => {
                   logout();
                   onClose();

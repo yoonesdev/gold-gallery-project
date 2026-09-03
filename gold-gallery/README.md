@@ -1,16 +1,105 @@
-# React + Vite
+# دیجی‌جواهر — راهنمای توسعه
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+این پروژه در حال حاضر یک **نمونهٔ نمایشی فرانت‌اند** برای بازارگاه طلا و جواهر است. رابط کاربری با React، React Router، Vite و Tailwind CSS ساخته شده است.
 
-Currently, two official plugins are available:
+> هشدار مهم: هنوز نباید این نسخه را با پرداخت واقعی یا اطلاعات واقعی مشتری منتشر کنید. ورود، ثبت‌نام، سبد خرید و سفارش‌ها فعلاً فقط در `localStorage` مرورگر ذخیره می‌شوند و سرورِ قابل استفاده‌ای وجود ندارد.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## شروع سریع
 
-## React Compiler
+در ترمینال VS Code، وارد پوشهٔ فرانت‌اند شوید:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```powershell
+cd gold-gallery
+npm.cmd run dev
+```
 
-## Expanding the ESLint configuration
+سپس نشانی که Vite نشان می‌دهد (معمولاً `http://localhost:5173`) را در مرورگر باز کنید.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+پیش از هر commit این دو دستور را اجرا کنید:
+
+```powershell
+npm.cmd run lint
+npm.cmd run build
+```
+
+## نقشهٔ پروژه
+
+```text
+src/
+  pages/       صفحه‌های قابل‌مشاهده و Routeهای اصلی
+  components/  قطعه‌های قابل استفاده مثل Header و ProductCard
+  layouts/     قالب مشترک صفحه‌ها (Header + محتوا + Footer)
+  context/     state سراسری موقت: کاربر، سبد، علاقه‌مندی، سفارش
+  services/    لایهٔ دسترسی به داده؛ امروز JSON، بعداً API
+  data/        دادهٔ نمایشی محصولات و فروشنده‌ها
+  hooks/       Hookهای قابل‌استفاده مثل debounce و filter
+```
+
+مسیر اجرای برنامه این است:
+
+`main.jsx` → `App.jsx` → `AppProviders.jsx` → `Layout.jsx` → `pages/`
+
+## قابلیت‌های فعلی
+
+- نمایش محصول‌ها بر اساس دسته‌بندی، جدیدترین، تخفیف‌دار، پرفروش و محبوب
+- جست‌وجوی محصول، علاقه‌مندی، سبد خرید و سفارش نمایشی
+- صفحهٔ محصول و صفحهٔ هر فروشگاه، با مرتب‌سازی محصولات فروشگاه
+- حساب کاربری و routeهای محافظت‌شده در سطح نمایشی
+
+## نکتهٔ React از `ShopPage.jsx`
+
+`sellerProducts` یک **متغیر** است، نه تابع. `useMemo(() => { ... }, [sellerId, sort, category])` تابع داخلش را اجرا می‌کند و نتیجهٔ آن را در `sellerProducts` نگه می‌دارد؛ فقط وقتی یکی از وابستگی‌ها تغییر کند دوباره محاسبه می‌شود.
+
+`Array.prototype.sort()` آرایهٔ اصلی را تغییر می‌دهد. بنابراین `[...products]` یک کپی تازه می‌سازد تا ترتیب دادهٔ اصلی تغییر نکند. `break` فقط از `switch` خارج می‌شود؛ `return` از کل تابع خارج می‌شود. اینجا `break` درست است چون در پایانِ تابع یک `return products` مشترک داریم.
+
+## چیزهایی که هنوز واقعی نیستند
+
+- ثبت‌نام، ورود و احراز هویت
+- موجودی محصول و جلوگیری از فروش هم‌زمان یک قطعه طلا
+- پرداخت آنلاین و رزرو حضوری
+- پنل فروشنده، بررسی مدارک، تأیید فروشنده و پنل ادمین
+- پایگاه داده، آپلود عکس، پیامک/ایمیل، آدرس، ارسال و فاکتور
+- سیاست‌های حقوقی، امنیت، گزارش‌گیری و SEO تولیدی
+
+## جریان صحیح Git برای همین پروژه
+
+از پوشهٔ ریشهٔ پروژه (`gold-gallery-project`) استفاده کن:
+
+```powershell
+# 1. ببین چه چیزهایی تغییر کرده‌اند
+git status
+
+# 2. تغییرات را مرور کن
+git diff
+
+# 3. فقط فایل‌های موردنظر را برای commit انتخاب کن
+git add gold-gallery/src/pages/ProductPage.jsx
+
+# 4. تغییرات انتخاب‌شده را دوباره بررسی کن
+git diff --staged
+
+# 5. یک commit کوچک و واضح بساز
+git commit -m "Fix storefront navigation and filters"
+
+# 6. آن را به GitHub بفرست
+git push origin main
+```
+
+`modified` زرد/نارنجی در VS Code یعنی فایل با آخرین commit فرق دارد؛ نه خطا است و نه به‌خودی‌خود روی GitHub رفته است. تا `git add`، `git commit` و `git push` را انجام ندهی، تغییر فقط روی کامپیوتر توست.
+
+برای کارهای بزرگ به جای `main` یک branch بساز:
+
+```powershell
+git switch -c codex/seller-dashboard
+```
+
+وقتی کامل شد، تست کن، commit بزن و push کن. بعد می‌توانی آن را با `main` ادغام کنی.
+
+## مسیر پیشنهادی برای تبدیل آن به marketplace واقعی
+
+1. ابتدا نسخهٔ MVP رزرو حضوری بساز: یک شهر محدود، فروشندگان انتخاب‌شده، محصول واقعی، درخواست رزرو و تأیید دستی. در این مرحله پرداخت نداشته باش.
+2. یک backend واقعی و پایگاه‌داده اضافه کن: API، کاربران، فروشندگان، فروشگاه‌ها، محصولات، عکس‌ها، رزروها و سفارش‌ها.
+3. نقش‌ها و تأیید فروشنده را پیاده‌سازی کن: customer، seller و admin؛ مدارک فروشنده فقط برای ادمین قابل‌مشاهده باشد.
+4. موجودی و رزرو اتمیک را اضافه کن تا یک قطعه طلا دوبار فروخته یا رزرو نشود.
+5. بعد از مشاورهٔ حقوقی، مالی و امنیتی متناسب با محل فعالیت، درگاه پرداخت و تسویه با فروشندگان را اضافه کن.
+6. در پایان روی SEO، صفحات عمومی فروشگاه/محصول، sitemap، metadata، سرعت، تصاویر بهینه، سیاست حریم خصوصی و شرایط استفاده کار کن.

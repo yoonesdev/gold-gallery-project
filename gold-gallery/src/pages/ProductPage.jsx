@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { CartContext } from "../context/CartContext";
-import { useMemo, useState, useEffect } from "react";
+import { CartContext } from "../context/contexts";
+import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getProductById, getRelatedProducts } from "../services/ProductService";
 import sellersData from "../data/sellers.json";
@@ -18,16 +18,17 @@ function ProductPage() {
     return getProductById(id);
   }, [id]);
 
-  useEffect(() => {
-    setSelectedImage(null);
-  }, [id]);
-
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageSelection, setImageSelection] = useState(null);
 
   const seller = useMemo(() => {
     if (!product) return null;
 
     return sellersData.find((item) => item.id === product.sellerId);
+  }, [product]);
+
+  const relatedProducts = useMemo(() => {
+    if (!product) return [];
+    return getRelatedProducts(product.id, product.category);
   }, [product]);
 
   if (!product) {
@@ -38,11 +39,10 @@ function ProductPage() {
     );
   }
 
-  const currentImage = selectedImage || product.image;
-  const relatedProducts = useMemo(() => {
-    if (!product) return [];
-    return getRelatedProducts(product.id, product.category);
-  }, [product]);
+  const currentImage =
+    imageSelection?.productId === product.id
+      ? imageSelection.image
+      : product.image;
 
   return (
     <PageContainer className="grid gap-8 lg:grid-cols-2 lg:gap-10 py-8 lg:py-10">
@@ -58,7 +58,7 @@ function ProductPage() {
             {product.gallery.map((image) => (
               <button
                 key={image}
-                onClick={() => setSelectedImage(image)}
+                onClick={() => setImageSelection({ productId: product.id, image })}
                 className="overflow-hidden rounded-lg border"
               >
                 <img
@@ -84,11 +84,10 @@ function ProductPage() {
           <p>امتیاز: ⭐{product.rating}</p>
 
           <p>
-            وزن: {product.weight}
-            گرم
+            وزن: {typeof product.weight === "number" ? `${product.weight} گرم` : "ثبت نشده"}
           </p>
 
-          <p>عیار: {product.karat}</p>
+          <p>عیار: {product.karat ?? "ثبت نشده"}</p>
 
           <p>توضیحات: {product.description}</p>
         </div>

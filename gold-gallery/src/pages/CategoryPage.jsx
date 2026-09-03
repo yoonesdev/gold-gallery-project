@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getProductsByCategory } from "../services/ProductService";
 import categories from "../constants/categories";
 import ProductCard from "../components/ProductCard";
@@ -28,9 +28,7 @@ function CategoryPage() {
             padding="p-5"
             className="transition hover:shadow-lg"
           >
-            <Link to={`/product/${product.id}/${product.slug}`}>
-              <ProductCard product={product} />
-            </Link>
+            <ProductCard product={product} />
           </Card>
         ))}
       </div>

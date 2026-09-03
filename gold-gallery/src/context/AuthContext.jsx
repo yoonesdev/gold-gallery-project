@@ -1,13 +1,12 @@
-import { createContext, useState, useEffect } from "react";
-
-export const AuthContext = createContext();
+import { useState, useEffect } from "react";
+import { AuthContext } from "./contexts";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("user");
       return saved ? JSON.parse(saved) : null;
-    } catch (error) {
+    } catch {
       console.error("Invalid user in localStorage");
       return null;
     }
@@ -17,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  const login = (email, password) => {
+  const login = (email) => {
     const fakeUser = {
       name: "کاربر تستی",
       email,
@@ -26,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     setUser(fakeUser);
   };
 
-  const register = (name, email, password) => {
+  const register = (name, email) => {
     const newUser = {
       name,
       email,

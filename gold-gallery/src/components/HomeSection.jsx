@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
 
 function HomeSection({ 
@@ -18,14 +17,14 @@ function HomeSection({
         <div className="flex items-center gap-2">
           <button
             onClick={() => scrollCarousel(carouselRef, "left")}
-            className="rounded-xl border bg-white px-3 py-2 text-lg shadow transition hover:shadow-md sm:px-6 sm:text-xl"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border bg-white text-lg shadow transition hover:shadow-md sm:h-12 sm:w-12 sm:text-xl cursor-pointer"
           >
             ←
           </button>
 
           <button
             onClick={() => scrollCarousel(carouselRef, "right")}
-            className="rounded-xl border bg-white px-3 py-2 text-lg shadow transition hover:shadow-md sm:px-6 sm:text-xl"
+            className="flex h-11 w-11 items-center justify-center rounded-xl border bg-white text-lg shadow transition hover:shadow-md sm:h-12 sm:w-12 sm:text-xl cursor-pointer"
           >
             →
           </button>
@@ -39,15 +38,13 @@ function HomeSection({
         {products.map((product) => (
           <div
             key={product.id}
-            className="flex w-[220px] min-w-[220px] flex-col overflow-hidden rounded-xl bg-white shadow-sm sm:w-[258px] sm:min-w-[258px]"
+            className="flex w-[220px] shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-sm sm:w-[258px]"
           >
-            <Link to={`/product/${product.id}/${product.slug}`}>
-              <ProductCard product={product} />
-            </Link>
+            <ProductCard product={product} />
 
             <button
               onClick={() => addToCart(product)}
-              className="mt-auto w-full bg-pink-500 px-4 py-3 text-white cursor-pointer"
+              className="mt-auto w-full cursor-pointer bg-pink-500 px-4 py-3 text-white transition-colors hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300"
             >
               افزودن به سبد
             </button>

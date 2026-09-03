@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/contexts";
 import { Link } from "react-router-dom";
 import PageContainer from "../components/layout/PageContainer";
 import SectionTitle from "../components/ui/SectionTitle";

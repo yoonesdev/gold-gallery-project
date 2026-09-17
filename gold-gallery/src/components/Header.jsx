@@ -1,14 +1,46 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { CartContext, AuthContext } from "../context/contexts";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import categories from "../constants/categories";
 import MobileMenu from "./MobileMenu";
+import { getGoldPrice } from "../services/GoldPriceService";
 
 function Header() {
   const { cart, cartMessage } = useContext(CartContext);
   const { user, logout } = useContext(AuthContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [goldPrice, setGoldPrice] = useState(null);
+  const [goldPriceError, setGoldPriceError] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchGoldPrice = async () => {
+      try {
+        const data = await getGoldPrice();
+
+        if (isMounted) {
+          setGoldPrice(data);
+          setGoldPriceError(false);
+        }
+      } catch {
+        if (isMounted) {
+          setGoldPriceError(true);
+        }
+      }
+    };
+
+    fetchGoldPrice();
+
+    const intervalId = setInterval(fetchGoldPrice, 1000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
 
   const totalItems = useMemo(() => {
     return cart.reduce((total, item) => total + item.quantity, 0);
@@ -16,6 +48,22 @@ function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm">
+      
+      <div className="border-b border-gray-100 bg-gray-50">
+        <div className="mx-auto flex max-w-[1126px] items-center justify-center px-4 py-2 text-sm">
+          {goldPriceError ? (
+            <span className="text-red-500">خطا در دریافت قیمت طلا</span>
+          ) : goldPrice ? (
+            <span className="font-bold text-gray-700">
+              طلای ۱۸ عیار: {goldPrice.pricePerGram.toLocaleString("fa-IR")}{" "}
+              تومان / گرم
+            </span>
+          ) : (
+            <span className="text-gray-400">در حال دریافت قیمت طلا...</span>
+          )}
+        </div>
+      </div>
+
       <div className="relative z-50 mx-auto flex max-w-[1126px] items-center justify-between gap-4 px-4 py-4">
         {/* Logo */}
         <div className="flex items-center gap-3">

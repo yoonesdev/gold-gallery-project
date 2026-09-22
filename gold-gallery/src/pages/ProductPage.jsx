@@ -6,8 +6,8 @@ import {
   getProductById,
   getRelatedProducts,
 } from "../services/ProductService";
-import { getProductPrice, formatToman } from "../services/PricingService";
-import { getGoldPrice } from "../services/GoldPriceService";
+import { formatToman } from "../services/PricingService";
+import { getProductPrice } from "../services/ProductPriceService";
 
 import sellersData from "../data/sellers.json";
 
@@ -22,8 +22,8 @@ function ProductPage() {
   const [added, setAdded] = useState(false);
   const [imageSelection, setImageSelection] = useState(null);
 
-  const [goldPrice, setGoldPrice] = useState(null);
-  const [goldPriceError, setGoldPriceError] = useState(false);
+  const [productPrice, setProductPrice] = useState(null);
+  const [productPriceError, setProductPriceError] = useState(false);
 
   const product = useMemo(() => {
     return getProductById(id);
@@ -32,30 +32,33 @@ function ProductPage() {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchGoldPrice = async () => {
+    const fetchProductPrice = async () => {
       try {
-        const data = await getGoldPrice();
+        const data = await getProductPrice(id);
 
         if (isMounted) {
-          setGoldPrice(data);
-          setGoldPriceError(false);
+          setProductPrice(data);
+          setProductPriceError(false);
         }
       } catch {
         if (isMounted) {
-          setGoldPriceError(true);
+          setProductPriceError(true);
         }
       }
     };
 
-    fetchGoldPrice();
+    fetchProductPrice();
 
-    const intervalId = setInterval(fetchGoldPrice, 60 * 1000);
+    const intervalId = setInterval(
+      fetchProductPrice,
+      60 * 1000
+    );
 
     return () => {
       isMounted = false;
       clearInterval(intervalId);
     };
-  }, []);
+  }, [id]);
 
   const seller = useMemo(() => {
     if (!product) return null;
@@ -89,17 +92,6 @@ function ProductPage() {
     imageSelection?.productId === product.id
       ? imageSelection.image
       : product.image;
-
-  let productPrice = null;
-
-  if (goldPrice && !goldPriceError) {
-    productPrice = getProductPrice(product, goldPrice);
-  } else {
-    productPrice = {
-      priceToman: product.price,
-      mode: "fixed",
-    };
-  }
 
   return (
     <PageContainer className="grid gap-8 py-8 lg:grid-cols-2 lg:gap-10 lg:py-10">
@@ -144,19 +136,21 @@ function ProductPage() {
           <p>
             قیمت:{" "}
             <strong>
-              {formatToman(productPrice.priceToman)}
+              {productPrice
+                ? formatToman(productPrice.priceToman)
+                : "در حال دریافت..."}
             </strong>
           </p>
 
-          {productPrice.mode === "live" && (
+          {productPrice?.mode === "live" && (
             <p className="text-sm text-green-600">
               قیمت بر اساس نرخ لحظه‌ای طلای ۱۸ عیار
             </p>
           )}
 
-          {goldPriceError && (
+          {productPriceError && (
             <p className="text-sm text-orange-500">
-              قیمت لحظه‌ای در دسترس نیست؛ قیمت پایه نمایش داده شد.
+              قیمت محصول در دسترس نیست.
             </p>
           )}
 
@@ -194,8 +188,11 @@ function ProductPage() {
         )}
 
         <button
-          className="mt-8 w-full rounded-lg bg-pink-500 px-6 py-3 text-white hover:bg-pink-600 sm:w-auto"
+          disabled={!productPrice}
+          className="mt-8 w-full rounded-lg bg-pink-500 px-6 py-3 text-white hover:bg-pink-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           onClick={() => {
+            if (!productPrice) return;
+
             addToCart({
               ...product,
               price: productPrice.priceToman,
@@ -206,7 +203,11 @@ function ProductPage() {
             setTimeout(() => setAdded(false), 1000);
           }}
         >
-          {added ? "✔ اضافه شد" : "افزودن به سبد خرید"}
+          {added
+            ? "✔ اضافه شد"
+            : productPrice
+              ? "افزودن به سبد خرید"
+              : "در حال دریافت قیمت..."}
         </button>
       </div>
 

@@ -1,14 +1,24 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 
-const app = express();
-const PORT = 5000;
+const { fetchGold18Price } = require("./services/GoldPriceService");
 
-// Middleware
+const {
+  calculateProductPrice,
+} = require("./services/PricingService");
+
+const {
+  getProductById,
+} = require("./data/products");
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
 app.use(cors());
 app.use(express.json());
 
-// Health check
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -16,21 +26,64 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Temporary development gold price
-app.get("/api/gold-price", (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      asset: "gold_18",
-      currency: "toman",
-      pricePerGram: 22000000,
-      updatedAt: new Date().toISOString(),
-      status: "demo",
-    },
-  });
+app.get("/api/gold-price", async (req, res) => {
+  try {
+    const goldPrice = await fetchGold18Price();
+
+    res.json({
+      success: true,
+      data: goldPrice,
+    });
+  } catch (error) {
+    console.error("Gold price error:", error.message);
+
+    res.status(503).json({
+      success: false,
+      message: "Unable to fetch the current gold price.",
+    });
+  }
 });
 
-// Start server
+app.get("/api/products/:id/price", async (req, res) => {
+  try {
+    const product = getProductById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
+
+    const goldPrice = await fetchGold18Price();
+
+    const price = calculateProductPrice(
+      product,
+      goldPrice,
+    );
+
+    res.json({
+      success: true,
+      data: {
+        productId: product.id,
+        ...price,
+      },
+    });
+  } catch (error) {
+    console.error(
+      "Product price error:",
+      error.message,
+    );
+
+    res.status(503).json({
+      success: false,
+      message: "Unable to calculate product price.",
+    });
+  }
+});
+
 app.listen(PORT, () => {
-  console.log(`Gold Gallery server running on http://localhost:${PORT}`);
+  console.log(
+    `Gold Gallery server running on http://localhost:${PORT}`,
+  );
 });

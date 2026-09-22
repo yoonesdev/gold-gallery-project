@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AuthContext } from "./contexts";
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => { 
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("user");

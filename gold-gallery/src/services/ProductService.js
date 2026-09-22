@@ -57,5 +57,5 @@ export function getRelatedProducts(productId, category) {
         p.id !== Number(productId) &&
         p.category === category,
     )
-    .slice(0, 4);
+    .slice(0, 4); 
 }

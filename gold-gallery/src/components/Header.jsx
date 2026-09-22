@@ -34,7 +34,7 @@ function Header() {
 
     fetchGoldPrice();
 
-    const intervalId = setInterval(fetchGoldPrice, 1000);
+    const intervalId = setInterval(fetchGoldPrice, 60 * 1000);
 
     return () => {
       isMounted = false;

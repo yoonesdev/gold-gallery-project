@@ -473,5 +473,23 @@
     "isNew": false,
     "isBestSeller": true,
     "popularity": 100
+  },
+  {
+    "id": 26,
+    "title": "انگشتر طلا",
+    "slug": "gold-ring",
+    "sellerId": 5,
+    "sellerName": "طلافروشی ایرانیان",
+    "sellerCity": "شیراز",
+    "sellerRate": 4.9,
+    "price": 34500000,
+    "discountPercentage": 0,
+    "salesCount": 120,
+    "rating": 4.8,
+    "image": "/images/ring_8.jpg",
+    "category": "rings",
+    "isNew": true,
+    "isBestSeller": true,
+    "popularity": 100
   }
 ]

@@ -13,6 +13,6 @@ export function createOrder(cart) {
       0,
     ),
     date: new Date().toLocaleDateString("fa-IR"),
-    status: "pending",
+    status: "pending",  
   };
 }

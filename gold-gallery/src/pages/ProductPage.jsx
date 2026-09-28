@@ -193,10 +193,7 @@ function ProductPage() {
           onClick={() => {
             if (!productPrice) return;
 
-            addToCart({
-              ...product,
-              price: productPrice.priceToman,
-            });
+            addToCart(product);
 
             setAdded(true);
 

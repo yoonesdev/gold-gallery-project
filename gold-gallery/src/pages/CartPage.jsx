@@ -1,12 +1,17 @@
+
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { CartContext } from "../context/contexts";
-
 import { getProductById } from "../services/ProductService";
+import { useCartPricePreview } from "../hooks/useCartPricePreview";
 
 import PageContainer from "../components/layout/PageContainer";
 import SectionTitle from "../components/ui/SectionTitle";
+
+function formatToman(amount) {
+  return `${amount.toLocaleString("fa-IR")} تومان`;
+}
 
 function CartPage() {
   const {
@@ -16,15 +21,21 @@ function CartPage() {
     decrease,
   } = useContext(CartContext);
 
+  const {
+    prices,
+    loading,
+    error,
+    allPricesAvailable,
+    totalPrice,
+  } = useCartPricePreview(cart);
+
   const cartProducts = cart
     .map((item) => {
       const product = getProductById(
         item.productId
       );
 
-      if (!product) {
-        return null;
-      }
+      if (!product) return null;
 
       return {
         ...item,
@@ -34,16 +45,13 @@ function CartPage() {
     .filter(Boolean);
 
   const totalItems = cart.reduce(
-    (total, item) =>
-      total + item.quantity,
+    (total, item) => total + item.quantity,
     0
   );
 
   return (
     <PageContainer>
-      <SectionTitle>
-        سبد خرید
-      </SectionTitle>
+      <SectionTitle>سبد خرید</SectionTitle>
 
       {cart.length === 0 ? (
         <div className="rounded-xl bg-white p-8 shadow-sm">
@@ -52,88 +60,120 @@ function CartPage() {
       ) : (
         <div className="space-y-4">
           {cartProducts.map(
-            ({
-              productId,
-              quantity,
-              product,
-            }) => (
-              <div
-                key={productId}
-                className="flex flex-col gap-5 rounded-xl bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5"
-              >
-                <div className="w-full">
-                  <h3 className="mb-2 font-bold">
-                    {product.title}
-                  </h3>
+            ({ productId, quantity, product }) => {
+              const price = prices[productId];
 
-                  <p className="text-sm text-gray-500">
-                    قیمت در مرحله بررسی سفارش
-                    محاسبه می‌شود.
-                  </p>
-
-                  <div className="mt-3 flex items-center gap-3">
-                    <button
-                      onClick={() =>
-                        increase(
-                          productId
-                        )
-                      }
-                      className="flex h-8 w-8 items-center justify-center rounded-lg border"
-                    >
-                      +
-                    </button>
-
-                    <span>
-                      {quantity}
-                    </span>
-
-                    <button
-                      onClick={() =>
-                        decrease(
-                          productId
-                        )
-                      }
-                      className="flex h-8 w-8 items-center justify-center rounded-lg border"
-                    >
-                      -
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() =>
-                    removeFromCart(
-                      productId
-                    )
-                  }
-                  className="w-full rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600 sm:w-auto"
+              return (
+                <div
+                  key={productId}
+                  className="flex flex-col gap-5 rounded-xl bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-5"
                 >
-                  حذف
-                </button>
-              </div>
-            )
+                  <div className="w-full">
+                    <h3 className="mb-2 font-bold">
+                      {product.title}
+                    </h3>
+
+                    {price ? (
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <p>
+                          قیمت هر عدد:{" "}
+                          {formatToman(
+                            price.priceToman
+                          )}
+                        </p>
+
+                        <p>
+                          تعداد: {quantity}
+                        </p>
+
+                        <p className="font-bold text-gray-900">
+                          جمع این محصول:{" "}
+                          {formatToman(
+                            price.priceToman *
+                              quantity
+                          )}
+                        </p>
+
+                        {price.mode === "live" && (
+                          <p className="text-xs text-green-600">
+                            قیمت بر اساس نرخ لحظه‌ای طلا
+                          </p>
+                        )}
+
+                        {price.mode === "fixed" && (
+                          <p className="text-xs text-gray-500">
+                            قیمت ثابت ثبت‌شده برای محصول
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500">
+                        {loading
+                          ? "در حال دریافت قیمت..."
+                          : "قیمت در دسترس نیست"}
+                      </p>
+                    )}
+
+                    <div className="mt-3 flex items-center gap-3">
+                      <button
+                        onClick={() => increase(productId)}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border"
+                      >
+                        +
+                      </button>
+
+                      <span>{quantity}</span>
+
+                      <button
+                        onClick={() => decrease(productId)}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border"
+                      >
+                        -
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      removeFromCart(productId)
+                    }
+                    className="w-full rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600 sm:w-auto"
+                  >
+                    حذف
+                  </button>
+                </div>
+              );
+            }
           )}
 
           <div className="mt-8 rounded-xl bg-white p-4 shadow-sm sm:p-6">
             <div className="mb-3 flex items-center justify-between text-sm sm:text-base">
-              <span>
-                تعداد کل محصولات
-              </span>
-
-              <span>
-                {totalItems}
-              </span>
+              <span>تعداد کل محصولات</span>
+              <span>{totalItems}</span>
             </div>
 
             <div className="flex items-center justify-between text-base font-bold sm:text-lg">
-              <span>
-                جمع کل
-              </span>
+              <span>جمع کل</span>
 
               <span>
-                در مرحله بررسی سفارش
+                {allPricesAvailable
+                  ? formatToman(totalPrice)
+                  : loading
+                    ? "در حال محاسبه..."
+                    : "قیمت در دسترس نیست"}
               </span>
             </div>
+
+            {error && (
+              <p className="mt-3 text-sm text-red-600">
+                خطا در دریافت قیمت: {error}
+              </p>
+            )}
+
+            <p className="mt-3 text-xs text-gray-500">
+              قیمت طلا ممکن است تا زمان ثبت سفارش تغییر کند.
+              مبلغ نهایی توسط سرور بررسی می‌شود.
+            </p>
 
             <Link
               to="/checkout"

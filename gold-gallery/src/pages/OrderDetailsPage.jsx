@@ -1,3 +1,4 @@
+
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
 import { OrderContext } from "../context/contexts";
@@ -8,7 +9,7 @@ function OrderDetailsPage() {
   const { id } = useParams();
   const { orders } = useContext(OrderContext);
 
-  const order = orders.find((o) => o.id === Number(id));
+  const order = orders.find((o) => String(o.id) === id);
 
   if (!order) {
     return (
@@ -18,14 +19,26 @@ function OrderDetailsPage() {
     );
   }
 
+  // Support both old and new order formats.
+  const orderDate = order.createdAt
+    ? new Date(order.createdAt).toLocaleDateString("fa-IR")
+    : order.date || "—";
+
+  const totalPrice = order.totalPriceToman ?? order.totalPrice;
+
   return (
     <PageContainer maxWidth="max-w-[900px]">
       <SectionTitle>
         سفارش #{order.id}
       </SectionTitle>
 
-      <div className="space-y-4 rounded-xl bg-white p-4 shadow-sm sm:p-6">
-        <p>تاریخ: {order.date}</p>
+      <div
+        dir="rtl"
+        className="space-y-4 rounded-xl bg-white p-4 shadow-sm sm:p-6"
+      >
+        <p>
+          تاریخ: {orderDate}
+        </p>
 
         <p>
           وضعیت:
@@ -36,27 +49,38 @@ function OrderDetailsPage() {
 
         <hr />
 
-        {order.items.map((item) => (
-          <div
-            key={item.id}
-            className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <span>{item.title}</span>
+        {order.items.map((item, index) => {
+          const unitPrice = item.unitPriceToman ?? item.price;
 
-            <span>
-              {item.quantity} × {item.price.toLocaleString("fa-IR")} تومان
-            </span>
-          </div>
-        ))}
+          const itemTotal =
+            item.totalPriceToman ?? unitPrice * item.quantity;
+
+          return (
+            <div
+              key={`${item.productId ?? item.id ?? index}`}
+              className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div>
+                <p className="font-medium">{item.title}</p>
+
+                <p className="text-sm text-gray-500">
+                  {item.quantity} ×{" "}
+                  {unitPrice?.toLocaleString("fa-IR") ?? "—"} تومان
+                </p>
+              </div>
+
+              <span className="font-medium">
+                {itemTotal?.toLocaleString("fa-IR") ?? "—"} تومان
+              </span>
+            </div>
+          );
+        })}
 
         <hr />
 
         <div className="text-base font-bold sm:text-lg">
-          جمع کل:
-          {" "}
-          {order.totalPrice.toLocaleString("fa-IR")}
-          {" "}
-          تومان
+          جمع کل:{" "}
+          {totalPrice?.toLocaleString("fa-IR") ?? "—"} تومان
         </div>
       </div>
     </PageContainer>

@@ -48,7 +48,16 @@
     "category": "necklace",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 65
+    "popularity": 65,
+    "weight": 2.1,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.1,
+      "makingFeePerGramToman": 450000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 3,
@@ -66,7 +75,16 @@
     "category": "necklace",
     "isNew": true,
     "isBestSeller": true,
-    "popularity": 80
+    "popularity": 80,
+    "weight": 2.8,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.8,
+      "makingFeePerGramToman": 500000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 4,
@@ -84,7 +102,16 @@
     "category": "necklace",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 1.4,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 1.4,
+      "makingFeePerGramToman": 550000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 5,
@@ -102,7 +129,16 @@
     "category": "necklace",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 65
+    "popularity": 65,
+    "weight": 3.7,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 3.7,
+      "makingFeePerGramToman": 600000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 6,
@@ -120,7 +156,16 @@
     "category": "rings",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 80
+    "popularity": 80,
+    "weight": 2.6,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.6,
+      "makingFeePerGramToman": 350000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 1200000
+    }
   },
   {
     "id": 7,
@@ -138,7 +183,16 @@
     "category": "rings",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 2.2,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.2,
+      "makingFeePerGramToman": 400000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 1800000
+    }
   },
   {
     "id": 8,
@@ -156,7 +210,16 @@
     "category": "rings",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 80
+    "popularity": 80,
+    "weight": 8.4,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 8.4,
+      "makingFeePerGramToman": 450000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 8000000
+    }
   },
   {
     "id": 9,
@@ -174,7 +237,16 @@
     "category": "rings",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.1,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.1,
+      "makingFeePerGramToman": 500000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 2500000
+    }
   },
   {
     "id": 10,
@@ -192,7 +264,16 @@
     "category": "rings",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 3.0,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 3.0,
+      "makingFeePerGramToman": 550000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 900000
+    }
   },
   {
     "id": 11,
@@ -210,7 +291,16 @@
     "category": "earrings",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 2.5,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.5,
+      "makingFeePerGramToman": 600000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 500000
+    }
   },
   {
     "id": 12,
@@ -228,7 +318,16 @@
     "category": "earrings",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 7.2,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 7.2,
+      "makingFeePerGramToman": 350000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 5000000
+    }
   },
   {
     "id": 13,
@@ -246,7 +345,16 @@
     "category": "earrings",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 8.6,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 8.6,
+      "makingFeePerGramToman": 400000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 7000000
+    }
   },
   {
     "id": 14,
@@ -264,7 +372,16 @@
     "category": "earrings",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 1.6,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 1.6,
+      "makingFeePerGramToman": 450000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 15,
@@ -287,7 +404,16 @@
     "category": "earrings",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 100
+    "popularity": 100,
+    "weight": 3.4,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 3.4,
+      "makingFeePerGramToman": 500000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 1000000
+    }
   },
   {
     "id": 16,
@@ -305,7 +431,16 @@
     "category": "bracelet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 3.1,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 3.1,
+      "makingFeePerGramToman": 550000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 17,
@@ -323,7 +458,16 @@
     "category": "bracelet",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.0,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.0,
+      "makingFeePerGramToman": 600000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 18,
@@ -341,7 +485,16 @@
     "category": "bracelet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 5.2,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 5.2,
+      "makingFeePerGramToman": 350000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 19,
@@ -359,7 +512,16 @@
     "category": "bracelet",
     "isNew": true,
     "isBestSeller": false,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 2.8,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.8,
+      "makingFeePerGramToman": 400000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 20,
@@ -377,7 +539,16 @@
     "category": "bracelet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 7.0,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 7.0,
+      "makingFeePerGramToman": 450000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 21,
@@ -395,7 +566,16 @@
     "category": "anklet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.8,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.8,
+      "makingFeePerGramToman": 500000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   },
   {
     "id": 22,
@@ -418,7 +598,16 @@
     "category": "anklet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.2,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.2,
+      "makingFeePerGramToman": 550000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 300000
+    }
   },
   {
     "id": 23,
@@ -436,7 +625,16 @@
     "category": "anklet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.5,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.5,
+      "makingFeePerGramToman": 600000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 1200000
+    }
   },
   {
     "id": 24,
@@ -454,7 +652,16 @@
     "category": "anklet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 95
+    "popularity": 95,
+    "weight": 4.0,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.0,
+      "makingFeePerGramToman": 350000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 250000
+    }
   },
   {
     "id": 25,
@@ -472,7 +679,16 @@
     "category": "anklet",
     "isNew": false,
     "isBestSeller": true,
-    "popularity": 100
+    "popularity": 100,
+    "weight": 4.6,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 4.6,
+      "makingFeePerGramToman": 400000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 200000
+    }
   },
   {
     "id": 26,
@@ -490,6 +706,15 @@
     "category": "rings",
     "isNew": true,
     "isBestSeller": true,
-    "popularity": 100
+    "popularity": 100,
+    "weight": 2.6,
+    "karat": 18,
+    "pricing": {
+      "model": "weight_based",
+      "weightGrams": 2.6,
+      "makingFeePerGramToman": 450000,
+      "sellerProfitRate": 0.07,
+      "stonePriceToman": 0
+    }
   }
 ]

@@ -1,107 +1,151 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CartContext } from "./contexts";
 
-export const CartProvider = ({ children }) => {
-  const [cartMessage, setCartMessage] = useState(null);
+const MAX_QUANTITY = 99;
 
-  const [cart, setCart] = useState(() => {
+function loadCart() {
+  try {
     const saved = localStorage.getItem("cart");
 
     if (!saved) {
       return [];
     }
 
-    try {
-      const parsed = JSON.parse(saved);
+    const parsed = JSON.parse(saved);
 
-      if (!Array.isArray(parsed)) {
-        return [];
-      }
-
-      return parsed
-        .map((item) => {
-          // Support the old cart format during migration.
-          if (
-            typeof item.productId === "number" &&
-            typeof item.quantity === "number"
-          ) {
-            return {
-              productId: item.productId,
-              quantity: item.quantity,
-            };
-          }
-
-          if (
-            typeof item.id === "number" &&
-            typeof item.quantity === "number"
-          ) {
-            return {
-              productId: item.id,
-              quantity: item.quantity,
-            };
-          }
-
-          return null;
-        })
-        .filter(
-          (item) =>
-            item &&
-            item.quantity > 0
-        );
-    } catch {
+    if (!Array.isArray(parsed)) {
       return [];
     }
-  });
+
+    const normalizedCart = new Map();
+
+    for (const item of parsed) {
+      const productId = item?.productId ?? item?.id;
+      const quantity = item?.quantity;
+
+      if (
+        !Number.isSafeInteger(productId) ||
+        productId <= 0 ||
+        !Number.isSafeInteger(quantity) ||
+        quantity <= 0
+      ) {
+        continue;
+      }
+
+      const existingQuantity =
+        normalizedCart.get(productId) ?? 0;
+
+      normalizedCart.set(
+        productId,
+        Math.min(
+          existingQuantity + quantity,
+          MAX_QUANTITY,
+        ),
+      );
+    }
+
+    return Array.from(
+      normalizedCart,
+      ([productId, quantity]) => ({
+        productId,
+        quantity,
+      }),
+    );
+  } catch {
+    return [];
+  }
+}
+
+export const CartProvider = ({ children }) => {
+  const [cartMessage, setCartMessage] = useState(null);
+  const [cart, setCart] = useState(loadCart);
+
+  const messageTimeoutRef = useRef(null);
 
   useEffect(() => {
-    localStorage.setItem(
-      "cart",
-      JSON.stringify(cart)
-    );
+    try {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    } catch {
+      // The cart still works in memory if storage is unavailable.
+    }
   }, [cart]);
 
+  useEffect(() => {
+    return () => {
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const showCartMessage = (message) => {
+    setCartMessage(message);
+
+    if (messageTimeoutRef.current) {
+      clearTimeout(messageTimeoutRef.current);
+    }
+
+    messageTimeoutRef.current = setTimeout(() => {
+      setCartMessage(null);
+      messageTimeoutRef.current = null;
+    }, 1500);
+  };
+
   const addToCart = (product) => {
+    const productId = product?.id;
+
+    if (
+      !Number.isSafeInteger(productId) ||
+      productId <= 0
+    ) {
+      return;
+    }
+
+    const existingItem = cart.find(
+      (item) => item.productId === productId,
+    );
+
+    if (existingItem?.quantity >= MAX_QUANTITY) {
+      showCartMessage("حداکثر تعداد مجاز این محصول ثبت شده است");
+      return;
+    }
+
     setCart((prev) => {
-      const existIndex = prev.findIndex(
-        (item) =>
-          item.productId === product.id
+      const existing = prev.find(
+        (item) => item.productId === productId,
       );
 
-      if (existIndex !== -1) {
-        const updated = [...prev];
-
-        updated[existIndex] = {
-          ...updated[existIndex],
-          quantity:
-            updated[existIndex].quantity + 1,
-        };
-
-        return updated;
+      if (existing) {
+        return prev.map((item) =>
+          item.productId === productId
+            ? {
+                ...item,
+                quantity: Math.min(
+                  item.quantity + 1,
+                  MAX_QUANTITY,
+                ),
+              }
+            : item,
+        );
       }
 
       return [
         ...prev,
         {
-          productId: product.id,
+          productId,
           quantity: 1,
         },
       ];
     });
 
-    setCartMessage("محصول به سبد اضافه شد");
-
-    setTimeout(
-      () => setCartMessage(null),
-      1500
-    );
+    showCartMessage("محصول به سبد اضافه شد");
   };
 
   const removeFromCart = (productId) => {
     setCart((prev) =>
       prev.filter(
-        (item) =>
-          item.productId !== productId
-      )
+        (item) => item.productId !== productId,
+      ),
     );
   };
 
@@ -111,11 +155,13 @@ export const CartProvider = ({ children }) => {
         item.productId === productId
           ? {
               ...item,
-              quantity:
+              quantity: Math.min(
                 item.quantity + 1,
+                MAX_QUANTITY,
+              ),
             }
-          : item
-      )
+          : item,
+      ),
     );
   };
 
@@ -126,14 +172,11 @@ export const CartProvider = ({ children }) => {
           item.productId === productId
             ? {
                 ...item,
-                quantity:
-                  item.quantity - 1,
+                quantity: item.quantity - 1,
               }
-            : item
+            : item,
         )
-        .filter(
-          (item) => item.quantity > 0
-        )
+        .filter((item) => item.quantity > 0),
     );
   };
 

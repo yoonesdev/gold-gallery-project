@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
@@ -31,11 +30,11 @@ function CartPage() {
 
   const cartProducts = cart
     .map((item) => {
-      const product = getProductById(
-        item.productId
-      );
+      const product = getProductById(item.productId);
 
-      if (!product) return null;
+      if (!product) {
+        return null;
+      }
 
       return {
         ...item,
@@ -46,8 +45,25 @@ function CartPage() {
 
   const totalItems = cart.reduce(
     (total, item) => total + item.quantity,
-    0
+    0,
   );
+
+  const canCheckout =
+    cart.length > 0 &&
+    cartProducts.length === cart.length &&
+    allPricesAvailable &&
+    !loading &&
+    !error;
+
+  let checkoutMessage = "قیمت‌ها در دسترس نیستند";
+
+  if (loading) {
+    checkoutMessage = "در حال بررسی قیمت‌ها...";
+  } else if (error) {
+    checkoutMessage = "ابتدا خطای دریافت قیمت را برطرف کنید";
+  } else if (cartProducts.length !== cart.length) {
+    checkoutMessage = "برخی محصولات دیگر در دسترس نیستند";
+  }
 
   return (
     <PageContainer>
@@ -77,20 +93,15 @@ function CartPage() {
                       <div className="space-y-1 text-sm text-gray-600">
                         <p>
                           قیمت هر عدد:{" "}
-                          {formatToman(
-                            price.priceToman
-                          )}
+                          {formatToman(price.priceToman)}
                         </p>
 
-                        <p>
-                          تعداد: {quantity}
-                        </p>
+                        <p>تعداد: {quantity}</p>
 
                         <p className="font-bold text-gray-900">
                           جمع این محصول:{" "}
                           {formatToman(
-                            price.priceToman *
-                              quantity
+                            price.priceToman * quantity,
                           )}
                         </p>
 
@@ -116,8 +127,11 @@ function CartPage() {
 
                     <div className="mt-3 flex items-center gap-3">
                       <button
+                        type="button"
                         onClick={() => increase(productId)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg border"
+                        disabled={quantity >= 99}
+                        aria-label="افزایش تعداد"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg border disabled:cursor-not-allowed disabled:opacity-40"
                       >
                         +
                       </button>
@@ -125,7 +139,9 @@ function CartPage() {
                       <span>{quantity}</span>
 
                       <button
+                        type="button"
                         onClick={() => decrease(productId)}
+                        aria-label="کاهش تعداد"
                         className="flex h-8 w-8 items-center justify-center rounded-lg border"
                       >
                         -
@@ -134,16 +150,15 @@ function CartPage() {
                   </div>
 
                   <button
-                    onClick={() =>
-                      removeFromCart(productId)
-                    }
+                    type="button"
+                    onClick={() => removeFromCart(productId)}
                     className="w-full rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600 sm:w-auto"
                   >
                     حذف
                   </button>
                 </div>
               );
-            }
+            },
           )}
 
           <div className="mt-8 rounded-xl bg-white p-4 shadow-sm sm:p-6">
@@ -175,12 +190,22 @@ function CartPage() {
               مبلغ نهایی توسط سرور بررسی می‌شود.
             </p>
 
-            <Link
-              to="/checkout"
-              className="mt-6 block rounded-lg bg-pink-500 py-3 text-center text-white hover:bg-pink-600"
-            >
-              ادامه فرایند خرید
-            </Link>
+            {canCheckout ? (
+              <Link
+                to="/checkout"
+                className="mt-6 block rounded-lg bg-pink-500 py-3 text-center text-white hover:bg-pink-600"
+              >
+                ادامه فرایند خرید
+              </Link>
+            ) : (
+              <button
+                type="button"
+                disabled
+                className="mt-6 block w-full cursor-not-allowed rounded-lg bg-gray-300 py-3 text-center text-gray-600"
+              >
+                {checkoutMessage}
+              </button>
+            )}
           </div>
         </div>
       )}

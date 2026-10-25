@@ -16,4 +16,4 @@
 Thumbs.db
 
 # Editor
-.vscode/
+.vscode/server/database/gold-gallery.db

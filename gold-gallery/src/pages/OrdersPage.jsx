@@ -1,4 +1,3 @@
-
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 
@@ -59,25 +58,45 @@ function getOrderTotal(order) {
 }
 
 function OrdersPage() {
-  const { orders = [] } = useContext(OrderContext);
+  const { orders = [], loading, error } = useContext(OrderContext);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <SectionTitle>سفارش‌های من</SectionTitle>
+
+        <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+          در حال دریافت سفارش‌ها...
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <SectionTitle>سفارش‌های من</SectionTitle>
+
+        <div className="rounded-xl bg-white p-8 text-center shadow-sm">
+          <p className="text-red-500">{error}</p>
+        </div>
+      </PageContainer>
+    );
+  }
 
   const sortedOrders = [...orders].sort(
     (a, b) =>
       new Date(b.createdAt || b.date || 0) -
-      new Date(a.createdAt || a.date || 0)
+      new Date(a.createdAt || a.date || 0),
   );
 
   return (
     <PageContainer>
-      <SectionTitle>
-        سفارش‌های من
-      </SectionTitle>
+      <SectionTitle>سفارش‌های من</SectionTitle>
 
       {sortedOrders.length === 0 ? (
         <div className="rounded-xl bg-white p-8 text-center shadow-sm">
-          <p className="text-gray-500">
-            هنوز سفارشی ثبت نکرده‌اید.
-          </p>
+          <p className="text-gray-500">هنوز سفارشی ثبت نکرده‌اید.</p>
 
           <Link
             to="/"
@@ -118,60 +137,47 @@ function OrdersPage() {
                 </div>
 
                 <div className="space-y-3 border-t pt-4">
-                  {(order.items || []).map(
-                    (item, index) => {
-                      const unitPrice =
-                        getItemPrice(item);
+                  {(order.items || []).map((item, index) => {
+                    const unitPrice = getItemPrice(item);
 
-                      const itemTotal =
-                        Number.isFinite(
-                          item.totalPriceToman
-                        )
-                          ? item.totalPriceToman
-                          : unitPrice !== null
-                            ? unitPrice *
-                              item.quantity
-                            : null;
+                    const itemTotal = Number.isFinite(item.totalPriceToman)
+                      ? item.totalPriceToman
+                      : unitPrice !== null
+                        ? unitPrice * item.quantity
+                        : null;
 
-                      return (
-                        <div
-                          key={
-                            item.productId ??
-                            item.id ??
-                            index
-                          }
-                          className="flex flex-col gap-2 rounded-lg bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between"
-                        >
-                          <div className="font-medium text-gray-800">
-                            {item.title ||
-                              `محصول شماره ${item.productId ?? item.id}`}
-                          </div>
-
-                          <div className="text-sm text-gray-600">
-                            {item.quantity} ×{" "}
-                            {unitPrice !== null
-                              ? formatToman(unitPrice)
-                              : "قیمت نامشخص"}
-                          </div>
-
-                          {itemTotal !== null && (
-                            <div className="text-sm font-bold text-gray-800">
-                              {formatToman(itemTotal)}
-                            </div>
-                          )}
+                    return (
+                      <div
+                        key={item.productId ?? item.id ?? index}
+                        className="flex flex-col gap-2 rounded-lg bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div className="font-medium text-gray-800">
+                          {item.title ||
+                            `محصول شماره ${item.productId ?? item.id}`}
                         </div>
-                      );
-                    }
-                  )}
+
+                        <div className="text-sm text-gray-600">
+                          {item.quantity} ×{" "}
+                          {unitPrice !== null
+                            ? formatToman(unitPrice)
+                            : "قیمت نامشخص"}
+                        </div>
+
+                        {itemTotal !== null && (
+                          <div className="text-sm font-bold text-gray-800">
+                            {formatToman(itemTotal)}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="mt-5 flex items-center justify-between border-t pt-4 text-base font-bold sm:text-lg">
                   <span>جمع کل</span>
 
                   <span>
-                    {orderTotal !== null
-                      ? formatToman(orderTotal)
-                      : "نامشخص"}
+                    {orderTotal !== null ? formatToman(orderTotal) : "نامشخص"}
                   </span>
                 </div>
 

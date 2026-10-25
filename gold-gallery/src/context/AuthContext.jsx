@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { AuthContext } from "./contexts";
 
-export const AuthProvider = ({ children }) => { 
+const API_BASE_URL = "http://localhost:5000";
+
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("user");
@@ -12,34 +15,69 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  useEffect(() => {
+  const [token, setToken] = useState(
+    () => localStorage.getItem("token") || null,
+  );
+
+  const saveAuth = ({ user, token }) => {
     localStorage.setItem("user", JSON.stringify(user));
-  }, [user]);
+    localStorage.setItem("token", token);
 
-  const login = (email) => {
-    const fakeUser = {
-      name: "کاربر تستی",
-      email,
-    };
-
-    setUser(fakeUser);
+    setUser(user);
+    setToken(token);
   };
 
-  const register = (name, email) => {
-    const newUser = {
-      name,
-      email,
-    };
+  const login = async (email, password) => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-    setUser(newUser);
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Login failed.");
+    }
+
+    saveAuth(result);
+  };
+
+  const register = async (name, email, password) => {
+    const response = await fetch(
+      `${API_BASE_URL}/api/auth/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Registration failed.");
+    }
+
+    saveAuth(result);
   };
 
   const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
     setUser(null);
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, token, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

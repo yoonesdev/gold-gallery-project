@@ -1,9 +1,5 @@
-
 import { useContext, useState } from "react";
-import {
-  CartContext,
-  OrderContext,
-} from "../context/contexts";
+import { AuthContext, CartContext, OrderContext } from "../context/contexts";
 import { useNavigate } from "react-router-dom";
 
 import PageContainer from "../components/layout/PageContainer";
@@ -18,6 +14,7 @@ function formatToman(amount) {
 }
 
 function CheckoutPage() {
+  const { token } = useContext(AuthContext);
   const { cart, clearCart } = useContext(CartContext);
   const { addOrder } = useContext(OrderContext);
 
@@ -34,21 +31,24 @@ function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  const totalItems = cart.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleOrder = async () => {
+
+    if (!token) {
+      navigate("/login", {
+        state: { from: "/checkout" },
+      });
+      return;
+    }
+
     if (cart.length === 0) {
       setSubmitError("سبد خرید خالی است.");
       return;
     }
 
     if (!allPricesAvailable) {
-      setSubmitError(
-        "ابتدا باید قیمت تمام محصولات دریافت شود."
-      );
+      setSubmitError("ابتدا باید قیمت تمام محصولات دریافت شود.");
       return;
     }
 
@@ -56,28 +56,24 @@ function CheckoutPage() {
     setSubmitError("");
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/orders`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: cart.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-            })),
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          items: cart.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+          })),
+        }),
+      });
 
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(
-          result.message || "خطا در ثبت سفارش."
-        );
+        throw new Error(result.message || "خطا در ثبت سفارش.");
       }
 
       const backendOrder = result.data;
@@ -93,10 +89,7 @@ function CheckoutPage() {
     } catch (err) {
       console.error("Checkout error:", err);
 
-      setSubmitError(
-        err.message ||
-          "ارتباط با سرور برقرار نشد."
-      );
+      setSubmitError(err.message || "ارتباط با سرور برقرار نشد.");
     } finally {
       setSubmitting(false);
     }
@@ -104,9 +97,7 @@ function CheckoutPage() {
 
   return (
     <PageContainer>
-      <SectionTitle>
-        تایید نهایی سفارش
-      </SectionTitle>
+      <SectionTitle>تایید نهایی سفارش</SectionTitle>
 
       {cart.length === 0 ? (
         <div className="rounded-xl bg-white p-6 shadow-sm">
@@ -126,18 +117,11 @@ function CheckoutPage() {
               const price = prices[item.productId];
 
               return (
-                <div
-                  key={item.productId}
-                  className="border-b pb-4"
-                >
+                <div key={item.productId} className="border-b pb-4">
                   <div className="flex justify-between gap-4">
-                    <span>
-                      محصول شماره {item.productId}
-                    </span>
+                    <span>محصول شماره {item.productId}</span>
 
-                    <span>
-                      تعداد: {item.quantity}
-                    </span>
+                    <span>تعداد: {item.quantity}</span>
                   </div>
 
                   {price ? (
@@ -145,21 +129,14 @@ function CheckoutPage() {
                       <div className="flex justify-between gap-4">
                         <span>قیمت هر عدد</span>
 
-                        <span>
-                          {formatToman(
-                            price.priceToman
-                          )}
-                        </span>
+                        <span>{formatToman(price.priceToman)}</span>
                       </div>
 
                       <div className="flex justify-between gap-4 font-bold text-gray-900">
                         <span>جمع این محصول</span>
 
                         <span>
-                          {formatToman(
-                            price.priceToman *
-                              item.quantity
-                          )}
+                          {formatToman(price.priceToman * item.quantity)}
                         </span>
                       </div>
                     </div>
@@ -195,9 +172,8 @@ function CheckoutPage() {
           </div>
 
           <p className="mt-4 rounded-lg bg-yellow-50 p-3 text-sm text-yellow-800">
-            توجه: قیمت طلا ممکن است تغییر کند.
-            مبلغ نهایی هنگام ثبت سفارش مجدداً توسط
-            سرور محاسبه و تأیید می‌شود.
+            توجه: قیمت طلا ممکن است تغییر کند. مبلغ نهایی هنگام ثبت سفارش مجدداً
+            توسط سرور محاسبه و تأیید می‌شود.
           </p>
 
           {priceError && (
@@ -214,16 +190,10 @@ function CheckoutPage() {
 
           <button
             onClick={handleOrder}
-            disabled={
-              submitting ||
-              pricesLoading ||
-              !allPricesAvailable
-            }
+            disabled={submitting || pricesLoading || !allPricesAvailable}
             className="mt-6 w-full rounded-lg bg-green-500 py-3 text-white hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {submitting
-              ? "در حال ثبت سفارش..."
-              : "ثبت نهایی سفارش"}
+            {submitting ? "در حال ثبت سفارش..." : "ثبت نهایی سفارش"}
           </button>
         </div>
       )}

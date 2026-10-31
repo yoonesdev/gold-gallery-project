@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 
 const express = require("express");
@@ -62,12 +63,9 @@ app.get("/api/products/:id/price", async (req, res) => {
 
     const goldPrice = await fetchGold18Price();
 
-    const price = calculateProductPrice(
-      product,
-      goldPrice,
-    );
+    const price = calculateProductPrice(product, goldPrice);
 
-    res.json({
+    return res.json({
       success: true,
       data: {
         productId: product.id,
@@ -75,20 +73,22 @@ app.get("/api/products/:id/price", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(
-      "Product price error:",
-      error.message,
-    );
+    console.error("Product price error:", error.message);
 
-    res.status(503).json({
+    return res.status(503).json({
       success: false,
       message: "Unable to calculate product price.",
     });
   }
 });
 
-app.listen(PORT, () => {
-  console.log(
-    `Gold Gallery server running on http://localhost:${PORT}`,
-  );
-});
+// Start the server only when this file is run directly.
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `Gold Gallery server running on http://localhost:${PORT}`,
+    );
+  });
+}
+
+module.exports = app;

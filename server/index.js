@@ -5,6 +5,10 @@ const express = require("express");
 const cors = require("cors");
 const orderRoutes = require("./routes/orderRoutes");
 const authRoutes = require("./routes/authRoutes");
+const sellerApplicationRoutes = require(
+  "./routes/sellerApplicationRoutes"
+);
+const adminSellerApplicationRoutes = require("./routes/adminSellerApplicationRoutes");
 
 const { fetchGold18Price } = require("./services/GoldPriceService");
 
@@ -24,6 +28,8 @@ app.use(express.json());
 
 app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/seller-applications", sellerApplicationRoutes);
+app.use("/api/admin", adminSellerApplicationRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({

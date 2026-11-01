@@ -40,7 +40,20 @@ function getUserByEmail(email) {
   return statement.get(email);
 }
 
+function isUserAdmin(userId) {
+  const statement = db.prepare(`
+    SELECT is_admin
+    FROM users
+    WHERE id = ?
+  `);
+
+  const user = statement.get(userId);
+
+  return user?.is_admin === 1;
+}
+
 module.exports = {
   createUser,
   getUserByEmail,
+  isUserAdmin,
 };
